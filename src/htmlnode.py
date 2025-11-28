@@ -40,3 +40,19 @@ class LeafNode(HTMLNode):
         return f"<{self.tag}{props}>{self.value}</{self.tag}>"
     
 
+class ParentNode(HTMLNode):
+    def __init__(self, tag, children, props=None):
+        super().__init__(tag, None, children, props)
+
+    def to_html(self):
+        if not self.tag:
+            raise ValueError("parent node must have a tag")
+        
+        if not self.children:
+            raise ValueError("pare node must have child elements")
+
+        merged_html = ""
+        for child in self.children:
+            merged_html += child.to_html()
+
+        return f"<{self.tag}>{merged_html}</{self.tag}>"
