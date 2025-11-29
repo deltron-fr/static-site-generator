@@ -7,19 +7,20 @@ import re
 
 def markdown_to_html_node(markdown):
     md_blocks = markdown_to_blocks(markdown)
-
     all_nodes = []
 
     for block in md_blocks:
         block_type = block_to_block_type(block)
+
         if block_type == BlockType.CODE:
             node = html_code_block(block)
-            all_nodes.append(node)
-            continue
+            if node:
+                all_nodes.append(node)
 
-        nodes = text_to_children(block, block_type)
-
-        all_nodes.extend(nodes)
+        else:
+            nodes = text_to_children(block, block_type)
+            if nodes:
+                all_nodes.extend(nodes)
 
     full_md_node = ParentNode("div", all_nodes)
     return full_md_node
@@ -76,10 +77,11 @@ def text_to_children(text, block_type):
         return leafnodes
 
 def html_code_block(text):
-    new_text = text[3:-3].lstrip("\n")
-    html_node = text_node_to_html_node(TextNode(new_text, TextType.CODE))
-    parent_node_code = ParentNode("pre", [html_node])
-    return parent_node_code
+    new_text = text.strip()[3:-3]
+    html_node = text_node_to_html_node(TextNode(new_text, TextType.TEXT))
+    code_node = ParentNode("code", [html_node])
+    parent_node_pre = ParentNode("pre", [code_node])
+    return parent_node_pre
 
 def get_header(text):
     match = re.search(r"#{1,6}\s", text).span()
@@ -106,7 +108,8 @@ def parse_unordered_list(text):
     list_leafnodes = []
 
     for item in items:
-        item = item.lstrip("- ").rstrip()
+        if item.startswith("- "):
+            item = item[2:].strip()
         nodes = text_to_textnodes(item)
 
         child_nodes = [text_node_to_html_node(n) for n in nodes]
@@ -128,15 +131,5 @@ def parse_ordered_list(text):
         list_leafnodes.append(ParentNode("li", child_nodes))
 
     return list_leafnodes
-
-
-md = """
-    - First item
-    - Second item with **bold**
-    - Third item with _italic_ and `code`
-    """
-node = markdown_to_html_node(md)
-html = node.to_html()
-print(html)
 
 

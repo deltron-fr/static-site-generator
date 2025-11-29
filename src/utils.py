@@ -1,6 +1,6 @@
 import os, shutil
 
-def copy_files(src, dest, deleted=False, src_root="static/", dst_root="public/"):
+def copy_files(src, dest, deleted=False):
     """
     Recursively copies files and subdirectories from 
     """
@@ -26,10 +26,7 @@ def copy_files(src, dest, deleted=False, src_root="static/", dst_root="public/")
 
         else:
             source = file_path
-            dst_path = os.path.relpath(file_path, src_root)
-
-            destination = os.path.join(dst_root, dst_path)
+            destination = os.path.join(dest, file)
             if not os.path.exists(destination):
                 os.mkdir(destination)
             copy_files(source, destination, deleted=True)
-

@@ -14,24 +14,16 @@ def markdown_to_blocks(markdown):
     """
     converts markdown document to block markdown
     """
-    lines = markdown.split("\n")
-    new_markdown = ""
-    for i in range(len(lines)):
-        if i == 0:
-            continue
-        new_markdown += f"{lines[i].strip()}\n"
-
+    lines = markdown.split("\n\n")
     new_blocks = []
 
-
-    blocks = new_markdown.split("\n\n")
-    for block in blocks:
-        if block.strip() == "":
+    for block in lines:
+        if block == "":
             continue
-
-        new_blocks.append(block)
+        new_blocks.append(block.strip())
 
     return new_blocks
+
 
 def block_to_block_type(block):
     """
