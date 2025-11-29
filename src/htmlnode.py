@@ -1,5 +1,8 @@
 
 class HTMLNode:
+    """
+    Represents a single HTML Node
+    """
     def __init__(self, tag=None, value=None, children=None, props=None):
         self.tag = tag
         self.value = value
@@ -23,6 +26,9 @@ class HTMLNode:
         
 
 class LeafNode(HTMLNode):
+    """
+    Represents a HTML Node that has no child
+    """
     def __init__(self, tag, value, props=None):
         super().__init__(tag, value, None, props)
 
@@ -41,9 +47,13 @@ class LeafNode(HTMLNode):
     
 
 class ParentNode(HTMLNode):
+    """
+    Represents a HTML Node with children
+    """
     def __init__(self, tag, children, props=None):
         super().__init__(tag, None, children, props)
 
+    # recursively converts html node to actual html tag
     def to_html(self):
         if not self.tag:
             raise ValueError("parent node must have a tag")
