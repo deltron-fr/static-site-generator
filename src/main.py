@@ -55,11 +55,14 @@ def generate_page(
     title = extract_title(contents_md)
     html_node = markdown_to_html_node(contents_md).to_html()
     
-    edited_template_content = template_content.replace("{{ Title }}", title).replace("{{ Content }}", html_node)
-    edited_html_content = edited_template_content.replace('href="/', f'href="{basepath}').replace('src="/', f'src="{basepath}')
-
+    edited_template_content = template_content.replace(
+                            "{{ Title }}", title).replace(
+                            "{{ Content }}", html_node).replace(
+                            'href="/', f'href="{basepath}').replace(
+                            'src="/', f'src="{basepath}')
+ 
     with open(dest_path, "w") as f:
-        f.write(edited_html_content)
+        f.write(edited_template_content)
 
 
 def generate_pages_recursive(
@@ -80,19 +83,17 @@ def generate_pages_recursive(
         if os.path.isfile(file_path):
             _, extension = os.path.splitext(file_path)
             if extension == ".md":
-                dst_file = os.path.relpath(file_path, content_base)
-                dst_file_name = dst_file.replace(".md", ".html")
-
+                dst_file_name = os.path.relpath(file_path, content_base).replace(".md", ".html")
                 dst_file_path = os.path.join(dst_root, dst_file_name)
 
                 os.makedirs(os.path.dirname(dst_file_path), exist_ok=True)
                 generate_page(file_path, template_path, dst_file_path, basepath=basepath)
+
             else:
                 print(f"skipping {file_name}...")
 
         else:
             source = file_path
-
             destination = os.path.join(dest_dir_path, file_name)
             if not os.path.exists(destination):
                 os.mkdir(destination)

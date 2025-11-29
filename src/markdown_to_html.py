@@ -31,79 +31,70 @@ def text_to_children(text, block_type):
     if block_type == BlockType.PARAGRAPH:
         stripped_text = text.lstrip("\n").rstrip()
         new_text = " ".join(stripped_text.split())
+
         text_nodes = text_to_textnodes(new_text)
-        child_nodes = []
 
-        for text_node in text_nodes:
-            child_nodes.append(text_node_to_html_node(text_node))
-
+        child_nodes = [text_node_to_html_node(n) for n in text_nodes]
         leafnodes.append(ParentNode("p", child_nodes))
 
         return leafnodes
     
     elif block_type == BlockType.HEADING:
-        new_text, h_no = get_header(text)
+        new_text, h_no = html_header(text)
         text_nodes = text_to_textnodes(new_text)
-        child_nodes = []
 
-        for text_node in text_nodes:
-            child_nodes.append(text_node_to_html_node(text_node))
-
+        child_nodes = [text_node_to_html_node(n) for n in text_nodes]
         leafnodes.append(ParentNode(f"h{h_no}", child_nodes))
 
         return leafnodes
     
     elif block_type == BlockType.QUOTE:
-        quote = get_quote(text)
+        quote = html_quote(text)
         text_nodes = text_to_textnodes(quote)
 
-        child_nodes = []
-
-        for text_node in text_nodes:
-            child_nodes.append(text_node_to_html_node(text_node))
+        child_nodes = [text_node_to_html_node(n) for n in text_nodes]
 
         leafnodes.append(ParentNode("blockquote", [ParentNode("p", child_nodes)]))
         return leafnodes
 
     elif block_type == BlockType.UNORDERED_LIST:
-        list_nodes = parse_unordered_list(text)
+        list_nodes = html_unordered_list(text)
         
         leafnodes.append(ParentNode("ul", list_nodes))
         return leafnodes
     
     elif block_type == BlockType.ORDERED_LIST:
-        list_nodes = parse_ordered_list(text)
+        list_nodes = html_ordered_list(text)
+
         leafnodes.append(ParentNode("ol", list_nodes))
         return leafnodes
 
 def html_code_block(text):
     new_text = text.strip()[3:-3]
+
     html_node = text_node_to_html_node(TextNode(new_text, TextType.TEXT))
     code_node = ParentNode("code", [html_node])
     parent_node_pre = ParentNode("pre", [code_node])
+
     return parent_node_pre
 
-def get_header(text):
+def html_header(text):
     match = re.search(r"#{1,6}\s", text).span()
 
-    actual_text = text[match[1]:]
-    heading_no = match[1] - 1
+    actual_text, heading_no = text[match[1]:], match[1] - 1
 
     return actual_text, heading_no
         
-def get_quote(text):
+def html_quote(text):
     stripped_text = text.lstrip("\n").rstrip()
     quotes = stripped_text.split("\n")
 
-    parsed_quotes = []
+    parsed_quotes = [q[1:].strip() for q in quotes]
 
-    for q in quotes:
-        q = q[1:].strip()
-        parsed_quotes.append(q)
     new_text = " ".join(parsed_quotes)
     return new_text
 
-def parse_unordered_list(text):
+def html_unordered_list(text):
     items = text.split("\n")
     list_leafnodes = []
 
@@ -117,7 +108,7 @@ def parse_unordered_list(text):
 
     return list_leafnodes
 
-def parse_ordered_list(text):
+def html_ordered_list(text):
     items = text.split("\n")
 
     list_leafnodes = []
