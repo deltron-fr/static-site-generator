@@ -5,7 +5,11 @@ from textnode import text_node_to_html_node, TextNode, TextType
 
 import re
 
+
 def markdown_to_html_node(markdown):
+    """
+    Convert full markdown text into a ParentNode tree representing HTML.
+    """
     md_blocks = markdown_to_blocks(markdown)
     all_nodes = []
 
@@ -25,7 +29,11 @@ def markdown_to_html_node(markdown):
     full_md_node = ParentNode("div", all_nodes)
     return full_md_node
 
+
 def text_to_children(text, block_type):
+    """
+    Map a markdown block string to a list of HTML child nodes based on its block type.
+    """
     leafnodes = []
 
     if block_type == BlockType.PARAGRAPH:
@@ -69,7 +77,11 @@ def text_to_children(text, block_type):
         leafnodes.append(ParentNode("ol", list_nodes))
         return leafnodes
 
+
 def html_code_block(text):
+    """
+    Convert a code block markdown into a <pre><code> ParentNode.
+    """
     new_text = text.strip()[3:-3]
 
     html_node = text_node_to_html_node(TextNode(new_text, TextType.TEXT))
@@ -78,14 +90,22 @@ def html_code_block(text):
 
     return parent_node_pre
 
+
 def html_header(text):
+    """
+    Extract header text and number from a markdown heading line.
+    """
     match = re.search(r"#{1,6}\s", text).span()
 
     actual_text, heading_no = text[match[1]:], match[1] - 1
 
     return actual_text, heading_no
         
+
 def html_quote(text):
+    """
+    Turn markdown blockquote lines into a single string.
+    """
     stripped_text = text.lstrip("\n").rstrip()
     quotes = stripped_text.split("\n")
 
@@ -94,7 +114,11 @@ def html_quote(text):
     new_text = " ".join(parsed_quotes)
     return new_text
 
+
 def html_unordered_list(text):
+    """
+    Convert markdown unordered list into a list of <li> ParentNodes.
+    """
     items = text.split("\n")
     list_leafnodes = []
 
@@ -108,7 +132,11 @@ def html_unordered_list(text):
 
     return list_leafnodes
 
+
 def html_ordered_list(text):
+    """
+    Convert markdown ordered list into a list of <li> ParentNodes.
+    """
     items = text.split("\n")
 
     list_leafnodes = []

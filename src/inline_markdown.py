@@ -1,9 +1,10 @@
 from textnode import TextType, TextNode
 import re
 
+
 def text_to_textnodes(text):
     """
-    converts text to a list of text nodes
+    Turn a single string into a list of TextNodes for inline formatting.
     """
     node = TextNode(text, TextType.TEXT)
 
@@ -22,7 +23,7 @@ def text_to_textnodes(text):
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     """
-    splits text nodes by delimiters such as - _(italics), **(bold), `(code)
+    splits text nodes by delimiters such as - _(italics), **(bold), `(code) and tag the text_type.
     """
     new_nodes = []
 
@@ -48,17 +49,26 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
 
     return new_nodes
 
+
 def extract_markdown_images(text):
+    """
+    Return all markdown image matches as (alt, url) tuples.
+    """
     matches = re.findall(r"!\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
     return matches
 
+
 def extract_markdown_links(text):
+    """
+    Return all markdown link matches as (text, url) tuples (excluding images).
+    """
     matches = re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
     return matches
 
+
 def split_nodes_images(old_nodes):
     """
-    splits nodes by images using its regex pattern
+    Replace markdown image in TextNodes with IMAGE TextNodes.
     """
     new_nodes = []
 
@@ -94,9 +104,10 @@ def split_nodes_images(old_nodes):
 
     return new_nodes
 
+
 def split_nodes_links(old_nodes):
     """
-    splits nodes by links using its regex pattern
+    Replace markdown link in TextNodes with LINK TextNodes.
     """
     new_nodes = []
 

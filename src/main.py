@@ -9,7 +9,7 @@ def extract_title(markdown):
 
 def copy_files(src, dest, deleted=False):
     """
-    Recursively copies files and subdirectories from 
+    Recursively copies files and subdirectories from the source(usually static/) to destination(docs/ or content/)
     """
     if not os.path.exists(src):
         raise FileNotFoundError
@@ -44,6 +44,9 @@ def generate_page(
         dest_path, 
         basepath="/"
         ):
+    """
+    Generate a single HTML page from a markdown file and an HTML template.
+    """
     print(f"Generating page from {from_path} to {dest_path} using {template_path}\n")
 
     with open(from_path, "r") as f:
@@ -73,6 +76,9 @@ def generate_pages_recursive(
         dst_root="public/", 
         basepath="/"
         ):
+    """
+    Recursively walk a content directory, converting .md files into HTML pages.
+    """
     files = os.listdir(dir_path_content)
 
     if not files:

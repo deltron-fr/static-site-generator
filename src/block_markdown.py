@@ -1,7 +1,11 @@
 from enum import Enum
 import re
 
+
 class BlockType(Enum):
+    """
+    High-level markdown block categories used by the parser.
+    """
     PARAGRAPH = "paragraph"
     HEADING = "heading"
     CODE = "code"
@@ -12,7 +16,7 @@ class BlockType(Enum):
 
 def markdown_to_blocks(markdown):
     """
-    converts markdown document to block markdown
+    Split a markdown document into high-level blocks separated by blank lines.
     """
     lines = markdown.split("\n\n")
     new_blocks = []
@@ -27,7 +31,7 @@ def markdown_to_blocks(markdown):
 
 def block_to_block_type(block):
     """
-    Takes a block of markdown and returns the type of block it is
+    Determine the BlockType of a given markdown block string.
     """
     blocks = block.split("\n")
     
