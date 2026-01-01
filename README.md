@@ -1,5 +1,4 @@
 ## static-site-generator
----
 
 A lightweight Python static site generator that converts Markdown files from `content/` into HTML pages in `docs/` (or `public/`) using a simple HTML `template.html`. It supports common block-level markdown and a basic set of inline formatting options.
 
